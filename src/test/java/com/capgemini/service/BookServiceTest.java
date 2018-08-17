@@ -23,7 +23,11 @@ import com.capgemini.types.BookTO.BookTOBuilder;
 import com.capgemini.types.CarTO;
 
 @RunWith(SpringRunner.class)
+<<<<<<< HEAD
 @SpringBootTest(properties = "spring.profiles.active=hsql")
+=======
+@SpringBootTest(properties = "spring.profiles.active=mysql")
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 public class BookServiceTest {
 
 	@Autowired
@@ -89,6 +93,7 @@ public class BookServiceTest {
 	}
 
 	@Test
+<<<<<<< HEAD
 	public void shouldGetAutoById() {
 
 		// given
@@ -97,6 +102,18 @@ public class BookServiceTest {
 		Set<Long> caregivers = new HashSet<>();
 
 		CarTO carAudi = CarTO.builder().agency(1L).brand("Audi").agency(1L).color("Czarny").engineCapacity(2.5F)
+=======
+	public void shouldgetAutoById() {
+
+		// given
+		Set<Long> rents = new HashSet<>();
+		// rents.add(1L);
+		// rents.add(2L);
+
+		Set<Long> caregivers = new HashSet<>();
+
+		CarTO carAudi = new CarTO().builder().agency(1L).brand("Audi").color("Czarny").engineCapacity(2.5F)
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 				.mileage(20034).power(320).rents(rents).caregivers(caregivers).type("kombi").build();
 		CarTO savedCar = carService.saveNewCar(carAudi);
 		// when
@@ -110,6 +127,7 @@ public class BookServiceTest {
 
 	}
 
+<<<<<<< HEAD
 	@Test
 	public void shouldUpdatedAutoById() {
 
@@ -138,4 +156,6 @@ public class BookServiceTest {
 
 	}
 
+=======
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 }

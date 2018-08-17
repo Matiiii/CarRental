@@ -15,8 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+<<<<<<< HEAD
 import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
+=======
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -80,7 +85,11 @@ public class CarEntity implements Serializable {
 		version = 1;
 	}
 
+<<<<<<< HEAD
 	@PostUpdate
+=======
+	@PreUpdate
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 	protected void onUpdate() {
 		updated = new Timestamp(new Date().getTime());
 		version += 1;

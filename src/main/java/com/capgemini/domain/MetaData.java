@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
+<<<<<<< HEAD
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Version;
@@ -14,6 +15,24 @@ import lombok.Data;
 public abstract class MetaData {
 
 	@Version
+=======
+import javax.persistence.Embeddable;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
+public class MetaData {
+
+>>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 	@Column(nullable = true)
 	private int version;
 
