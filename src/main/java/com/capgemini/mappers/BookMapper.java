@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
 import com.capgemini.domain.AuthorEntity;
 import com.capgemini.domain.BookEntity;
 import com.capgemini.types.AuthorTO;
-import com.capgemini.types.BookTO;
-import com.capgemini.types.BookTO.BookTOBuilder;;
+import com.capgemini.types.BookTO;;
 
 public class BookMapper {
 
@@ -17,7 +16,7 @@ public class BookMapper {
 			return null;
 
 		Set<AuthorTO> authorTOs = AuthorMapper.map2TOs(bookEntity.getAuthors());
-		return new BookTOBuilder().withAuthors(authorTOs).withTitle(bookEntity.getTitle()).withId(bookEntity.getId())
+		return BookTO.builder().withAuthors(authorTOs).withTitle(bookEntity.getTitle()).withId(bookEntity.getId())
 				.build();
 
 	}

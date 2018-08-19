@@ -30,7 +30,6 @@ public class CarTO {
 	private int mileage;
 	private float engineCapacity;
 	private Set<Long> rents = new HashSet<>();
-	private Long agency;
 	private Set<Long> caregivers = new HashSet<>();
 
 }

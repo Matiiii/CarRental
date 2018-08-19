@@ -7,6 +7,8 @@ import com.capgemini.domain.EmployeeEntity;
 
 public interface AgencyDao extends Dao<AgencyEntity, Long> {
 
-	Set<EmployeeEntity> findAllEmployeesByAgency(Long agencyId);
+	Set<EmployeeEntity> findAllEmployeesByAgencyId(Long agencyId);
+
+	AgencyEntity updateWithRelations(AgencyEntity agencyToUpdate);
 
 }

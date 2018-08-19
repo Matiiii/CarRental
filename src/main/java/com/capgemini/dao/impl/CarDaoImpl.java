@@ -10,10 +10,6 @@ import org.springframework.stereotype.Repository;
 import com.capgemini.dao.CarDao;
 import com.capgemini.domain.CarEntity;
 import com.capgemini.domain.EmployeeEntity;
-<<<<<<< HEAD
-import com.capgemini.domain.RentEntity;
-=======
->>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
 
 @Repository
 public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
@@ -42,30 +38,21 @@ public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
 		return query.getResultList().stream().collect(Collectors.toSet());
 	}
 
-<<<<<<< HEAD
 	public CarEntity updateWithRelations(CarEntity car) {
 
 		CarEntity carToUpdate = findOne(car.getId());
 
-		Set<EmployeeEntity> caregivers = carToUpdate.getCaregivers();
+		car.setCaregivers(carToUpdate.getCaregivers());
+		car.setRents(carToUpdate.getRents());
 
-		Set<RentEntity> rents = carToUpdate.getRents();
-
-		update(car);
-
-		/*
-		 * carToUpdate.setAgency(car.getAgency());
-		 * carToUpdate.setBrand(car.getBrand()); carToUpdate.getColor();
-		 */
-
-		carToUpdate.setCaregivers(caregivers);
-
-		carToUpdate.setRents(rents);
-
-		return carToUpdate;
+		return update(car);
 
 	}
 
-=======
->>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
+	@Override
+	public Set<CarEntity> findByCaregiverId(Long employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

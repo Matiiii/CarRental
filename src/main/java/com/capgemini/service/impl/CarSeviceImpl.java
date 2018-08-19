@@ -36,7 +36,6 @@ public class CarSeviceImpl implements CarService {
 
 	}
 
-<<<<<<< HEAD
 	@Override
 	@Transactional(readOnly = false)
 	public CarTO update(CarTO car) {
@@ -46,6 +45,10 @@ public class CarSeviceImpl implements CarService {
 		return carmapper.map(updatedCar);
 	}
 
-=======
->>>>>>> 1cf9227fac64f7c55c790189c3bc7517cfd9d7af
+	@Override
+	public CarTO addCaregive(Long employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -50,23 +50,8 @@ public class EmployeeEntity implements Serializable {
 	@Column(nullable = false, length = 40)
 	private String position;
 
-	@Column(nullable = false, length = 40)
-	private Long pesel;
-
-	@Column(nullable = true)
-	private Date birthday;
-
-	@Column(nullable = false, length = 40)
-	private String name;
-
-	@Column(nullable = false, length = 40)
-	private String surname;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AgencyEntity agency;
-
-	@Column(nullable = true)
-	private int phone;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "car_employee", joinColumns = {
@@ -78,7 +63,7 @@ public class EmployeeEntity implements Serializable {
 	protected void onCreate() {
 		created = new Timestamp(new Date().getTime());
 		version = 1;
-		setBirthday();
+
 	}
 
 	@PreUpdate
@@ -127,8 +112,8 @@ public class EmployeeEntity implements Serializable {
 		return birthday;
 	}
 
-	public void setBirthday() {
-		birthday = new PeselValidator(getPesel().toString()).getBirthDate();
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 
 	public AgencyEntity getAgency() {

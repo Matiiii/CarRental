@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,38 +13,55 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "AGENCY")
-public class AgencyEntity implements Serializable {
+public class AgencyEntity extends MetaData implements Serializable {
 
 	private static final long serialVersionUID = 7503221853516892066L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-
-	@Column(nullable = false, unique = true, length = 40)
-	private String name;
-
-	@Embedded
-	private MetaData metadata;
+	private Long id;
 
 	@Embedded
 	private Address address;
 
 	@OneToMany(mappedBy = "agency", fetch = FetchType.LAZY)
-	Set<EmployeeEntity> employees = new HashSet<>();
+	private Set<EmployeeEntity> employees = new HashSet<>();
 
-	@OneToMany(mappedBy = "agency", fetch = FetchType.LAZY)
-	Set<CarEntity> carsInAgency = new HashSet<>();
+	public AgencyEntity() {
+	}
+
+	public AgencyEntity(Long id, String name, Address address, Set<EmployeeEntity> employees) {
+		this.id = id;
+
+		this.address = address;
+		this.employees = employees;
+
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public Set<EmployeeEntity> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(Set<EmployeeEntity> employees) {
+		this.employees = employees;
+	}
 
 }
