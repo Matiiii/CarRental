@@ -1,5 +1,7 @@
 package com.capgemini.service.impl;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,20 @@ public class CarSeviceImpl implements CarService {
 	public CarTO addCaregive(Long employeeId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<CarTO> findCarsByBrand(String brand) {
+
+		Set<CarEntity> carList = carRepository.findCarByBrand(brand);
+		return carmapper.map2To(carList);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void delete(Long carId) {
+		carRepository.delete(carId);
+
 	}
 
 }

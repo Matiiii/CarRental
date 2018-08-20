@@ -1,5 +1,6 @@
 package com.capgemini.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,7 +9,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Embeddable
-public class PersonalDetail {
+public class PersonalDetail implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5652832593148031434L;
+
 	@Temporal(value = TemporalType.DATE)
 	@Column(nullable = true)
 	private Date birthday;

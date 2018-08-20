@@ -4,6 +4,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
@@ -62,6 +66,22 @@ public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
 	public Set<CarEntity> findByCaregiverId(Long employeeId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<CarEntity> findCarByBrand(String brand) {
+
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<CarEntity> cq = cb.createQuery(CarEntity.class);
+		Root<CarEntity> car = cq.from(CarEntity.class);
+		ParameterExpression<String> p = cb.parameter(String.class);
+		cq.select(car).where(cb.like(car.get("brand"), p));
+		TypedQuery<CarEntity> q = entityManager.createQuery(cq);
+		q.setParameter(p, brand);
+
+		return q.getResultList().stream().collect(Collectors.toSet());
+
 	}
 
 }

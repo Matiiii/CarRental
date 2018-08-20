@@ -2,6 +2,7 @@ package com.capgemini.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.enums.CarType;
 import com.capgemini.types.CarTO;
@@ -25,6 +27,7 @@ public class CarServiceTest {
 	@Autowired
 	private DataCreator dataCreator;
 
+	@Transactional
 	@Test
 	public void shouldgetAutoById() {
 
@@ -43,6 +46,7 @@ public class CarServiceTest {
 
 	}
 
+	@Transactional
 	@Test
 	public void shouldUpdatedAutoById() {
 
@@ -72,4 +76,43 @@ public class CarServiceTest {
 
 	}
 
+	@Transactional
+	@Test
+	public void shouldGet2AutosByBrand() {
+
+		// given
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+		dataCreator.saveNewAudiCar();
+
+		// when
+
+		Set<CarTO> selectedCars = carService.findCarsByBrand(savedCar.getBrand());
+
+		// then
+		assertNotNull(selectedCars);
+		assertEquals(2, selectedCars.size());
+		assertEquals(savedCar.getBrand(), selectedCars.iterator().next().getBrand());
+
+	}
+
+	@Transactional
+	@Test
+	public void shouldDeleteAutoById() {
+
+		// given
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+
+		// when
+		Long id = savedCar.getId();
+
+		carService.delete(savedCar.getId());
+
+		CarTO selectedCar = carService.findCarById(id);
+
+		// then
+		assertNull(selectedCar);
+
+	}
 }

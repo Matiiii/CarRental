@@ -1,5 +1,7 @@
 package com.capgemini.service;
 
+import java.util.Set;
+
 import com.capgemini.types.CarTO;
 
 public interface CarService {
@@ -11,5 +13,9 @@ public interface CarService {
 	CarTO update(CarTO car);
 
 	CarTO addCaregive(Long employeeId);
+
+	Set<CarTO> findCarsByBrand(String brand);
+
+	void delete(Long carId);
 
 }

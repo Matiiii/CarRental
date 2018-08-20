@@ -62,12 +62,18 @@ public class CarMapper {
 	}
 
 	public Set<CarTO> map2To(Set<CarEntity> carEntiti) {
-		return carEntiti.stream().map(this::map).collect(Collectors.toSet());
+		if (carEntiti != null) {
+			return carEntiti.stream().map(this::map).collect(Collectors.toSet());
+		}
+		return null;
 
 	}
 
 	public Set<CarEntity> map2Entity(Set<CarTO> carTO) {
-		return carTO.stream().map(this::map).collect(Collectors.toSet());
+		if (carTO != null) {
+			return carTO.stream().map(this::map).collect(Collectors.toSet());
+		}
+		return null;
 	}
 
 }

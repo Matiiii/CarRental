@@ -1,5 +1,6 @@
 package com.capgemini.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.EntityListeners;
@@ -14,7 +15,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 
-public abstract class MetaData {
+public abstract class MetaData implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 769182575029121512L;
 
 	private int version;
 

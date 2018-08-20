@@ -10,6 +10,7 @@ import com.capgemini.dao.AgencyDao;
 import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.AgencyEntity;
 import com.capgemini.domain.EmployeeEntity;
+import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.mappers.AgencyMapper;
 import com.capgemini.mappers.EmployeeMapper;
 import com.capgemini.service.AgencyService;
@@ -77,6 +78,36 @@ public class AgencyServiceImpl implements AgencyService {
 
 		AgencyEntity updatedAgency = agencyRepository.update(agencyToUpdate);
 		employeeRepository.update(employeeToUpdate);
+
+		return agencyMapper.map(updatedAgency);
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public void delete(Long agencyId) {
+
+		agencyRepository.delete(agencyId);
+
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public AgencyTO deleteEmpoyeeFromAgency(Long agencyId, Long employeeId) throws ObjectNotExistException {
+
+		EmployeeEntity employee = employeeRepository.getOne(employeeId);
+		if (employee == null) {
+			throw new ObjectNotExistException("employee " + employeeId);
+		}
+		AgencyEntity agency = agencyRepository.getOne(agencyId);
+		if (agency == null) {
+			throw new ObjectNotExistException("agency " + agencyId);
+		}
+
+		agency.getEmployees().removeIf(empl -> empl.getId().equals(employeeId));
+		employee.setAgency(null);
+
+		AgencyEntity updatedAgency = agencyRepository.update(agency);
+		employeeRepository.update(employee);
 
 		return agencyMapper.map(updatedAgency);
 	}

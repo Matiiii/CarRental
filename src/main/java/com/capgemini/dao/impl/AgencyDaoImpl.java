@@ -37,11 +37,8 @@ public class AgencyDaoImpl extends AbstractDao<AgencyEntity, Long> implements Ag
 
 	@Override
 	public AgencyEntity addEmployeeToAgency(Long agencyId, EmployeeEntity employee) {
-
-		AgencyEntity agencyToUpdate = findOne(agencyId);
-		agencyToUpdate.getEmployees().add(employee);
-
-		return update(agencyToUpdate);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

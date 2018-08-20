@@ -1,10 +1,17 @@
 package com.capgemini.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Address {
+public class Address implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5550204893425710981L;
 
 	@Column(nullable = false, length = 40)
 	private String street;

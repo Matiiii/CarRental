@@ -17,4 +17,6 @@ public interface CarDao extends Dao<CarEntity, Long> {
 
 	CarEntity updateWithRelations(CarEntity car);
 
+	Set<CarEntity> findCarByBrand(String brand);
+
 }
