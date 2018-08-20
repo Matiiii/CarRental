@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.capgemini.enums.CarType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +37,8 @@ public class CarEntity extends MetaData implements Serializable {
 	@Column(nullable = false, length = 20)
 	private String brand;
 
-	@Column(nullable = false, length = 20)
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private CarType carType;
 
 	@Column(nullable = false, length = 30)
 	private String color;
@@ -114,20 +118,20 @@ public class CarEntity extends MetaData implements Serializable {
 		this.caregivers = caregivers;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public Set<RentEntity> getRents() {
 		return rents;
 	}
 
 	public void setRents(Set<RentEntity> rents) {
 		this.rents = rents;
+	}
+
+	public CarType getCarType() {
+		return carType;
+	}
+
+	public void setCarType(CarType carType) {
+		this.carType = carType;
 	}
 
 }

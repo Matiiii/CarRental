@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.capgemini.enums.CarType;
 import com.capgemini.types.CarTO;
 
 @RunWith(SpringRunner.class)
@@ -21,20 +22,16 @@ public class CarServiceTest {
 	@Autowired
 	private CarService carService;
 
+	@Autowired
+	private DataCreator dataCreator;
+
 	@Test
 	public void shouldgetAutoById() {
 
 		// given
-		Set<Long> rents = new HashSet<>();
-		// rents.add(1L);
-		// rents.add(2L);
 
-		Set<Long> caregivers = new HashSet<>();
+		CarTO savedCar = dataCreator.saveNewAudiCar();
 
-		CarTO carAudi = CarTO.builder().brand("Audi").color("Czarny").engineCapacity(2.5F)
-
-				.mileage(20034).power(320).rents(rents).caregivers(caregivers).type("kombi").build();
-		CarTO savedCar = carService.saveNewCar(carAudi);
 		// when
 
 		CarTO selectedCar = carService.findCarById(savedCar.getId());
@@ -56,15 +53,16 @@ public class CarServiceTest {
 		Set<Long> caregivers = new HashSet<>();
 
 		CarTO carAudi = CarTO.builder().brand("Audi").color("Zielony").engineCapacity(2.5F).mileage(20034).power(320)
-				.rents(rents).caregivers(caregivers).type("kombi").build();
+				.rents(rents).caregivers(caregivers).carType(CarType.WAGON).build();
 
 		CarTO savedCar = carService.saveNewCar(carAudi);
 
 		CarTO carAudi2 = CarTO.builder().id(savedCar.getId()).brand("Audi").color("Czerwony").engineCapacity(2.5F)
 				.mileage(20034).power(320).rents(rents).caregivers(caregivers).version(savedCar.getVersion())
-				.type("kombi").build();
+				.carType(CarType.VAN).build();
 
 		// when
+
 		CarTO updatedCar = carService.update(carAudi2);
 
 		// then

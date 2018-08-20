@@ -1,13 +1,13 @@
 package com.capgemini.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,9 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+
+import com.capgemini.enums.Position;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +27,7 @@ import lombok.Builder;
 @AllArgsConstructor
 @Entity
 @Table(name = "employee")
-public class EmployeeEntity implements Serializable {
+public class EmployeeEntity extends MetaData implements Serializable {
 
 	/**
 	 * 
@@ -36,22 +36,16 @@ public class EmployeeEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 
-	@Column(nullable = true)
-	private int version;
-
-	@Column(nullable = true)
-	private Timestamp created;
-
-	@Column(nullable = true)
-	private Timestamp updated;
-
-	@Column(nullable = false, length = 40)
-	private String position;
+	@Enumerated(EnumType.STRING)
+	private Position position;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AgencyEntity agency;
+
+	@Embedded
+	private PersonalDetail personalDetail;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "car_employee", joinColumns = {
@@ -59,61 +53,16 @@ public class EmployeeEntity implements Serializable {
 					@JoinColumn(name = "car_id", nullable = false, updatable = false) })
 	private Set<CarEntity> cars = new HashSet<>();
 
-	@PrePersist
-	protected void onCreate() {
-		created = new Timestamp(new Date().getTime());
-		version = 1;
-
-	}
-
-	@PreUpdate
-	protected void onUpdate() {
-		updated = new Timestamp(new Date().getTime());
-
-	}
-
 	// for Hibernate
 	public EmployeeEntity() {
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public String getPosition() {
-		return position;
-	}
-
-	public void setPosition(String position) {
-		this.position = position;
-	}
-
-	public Long getPesel() {
-		return pesel;
-	}
-
-	public void setPesel(Long pesel) {
-		this.pesel = pesel;
-	}
-
-	public Date getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
 	}
 
 	public AgencyEntity getAgency() {
@@ -124,12 +73,28 @@ public class EmployeeEntity implements Serializable {
 		this.agency = agency;
 	}
 
-	public int getPhone() {
-		return phone;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setPhone(int phone) {
-		this.phone = phone;
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	public PersonalDetail getPersonalDetail() {
+		return personalDetail;
+	}
+
+	public void setPersonalDetail(PersonalDetail personalDetail) {
+		this.personalDetail = personalDetail;
+	}
+
+	public Set<CarEntity> getCars() {
+		return cars;
+	}
+
+	public void setCars(Set<CarEntity> cars) {
+		this.cars = cars;
 	}
 
 }

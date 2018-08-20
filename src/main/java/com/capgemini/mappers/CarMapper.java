@@ -31,7 +31,7 @@ public class CarMapper {
 					.created(carEntity.getCreated()).updated(carEntity.getUpdated()).version(carEntity.getVersion())
 					.engineCapacity(carEntity.getEngineCapacity()).caregivers(caregiversId).rents(rentsId)
 					.mileage(carEntity.getMileage()).power(carEntity.getPower()).id(carEntity.getId())
-					.type(carEntity.getType()).build();
+					.carType(carEntity.getCarType()).build();
 
 		}
 		return null;
@@ -50,7 +50,7 @@ public class CarMapper {
 			carEntity.setEngineCapacity(carTO.getEngineCapacity());
 			carEntity.setMileage(carTO.getMileage());
 			carEntity.setPower(carTO.getPower());
-			carEntity.setType(carTO.getType());
+			carEntity.setCarType(carTO.getCarType());
 			carEntity.setVersion(carTO.getVersion());
 			carEntity.setCaregivers(caregivers);
 			carEntity.setRents(rents);

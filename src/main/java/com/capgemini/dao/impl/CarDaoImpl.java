@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.capgemini.dao.CarDao;
 import com.capgemini.domain.CarEntity;
 import com.capgemini.domain.EmployeeEntity;
+import com.capgemini.exceptions.DifferentVersionsException;
 
 @Repository
 public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
@@ -38,7 +39,15 @@ public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
 		return query.getResultList().stream().collect(Collectors.toSet());
 	}
 
+	public void checkVersion(CarEntity entity) {
+		if (entity.getVersion() != getOne(entity.getId()).getVersion()) {
+			throw new DifferentVersionsException();
+		}
+	}
+
 	public CarEntity updateWithRelations(CarEntity car) {
+
+		checkVersion(car);
 
 		CarEntity carToUpdate = findOne(car.getId());
 

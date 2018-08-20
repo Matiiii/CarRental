@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.capgemini.dao.AgencyDao;
 import com.capgemini.domain.AgencyEntity;
 import com.capgemini.domain.EmployeeEntity;
+import com.capgemini.exceptions.DifferentVersionsException;
 
 @Repository
 public class AgencyDaoImpl extends AbstractDao<AgencyEntity, Long> implements AgencyDao {
@@ -17,11 +18,28 @@ public class AgencyDaoImpl extends AbstractDao<AgencyEntity, Long> implements Ag
 		return null;
 	}
 
-	@Override
-	public AgencyEntity updateWithRelations(AgencyEntity agencyToUpdate) {
-		AgencyEntity carToUpdate = findOne(agencyToUpdate.getId());
+	public void checkVersion(AgencyEntity entity) {
+		if (entity.getVersion() != getOne(entity.getId()).getVersion()) {
+			throw new DifferentVersionsException();
+		}
+	}
 
-		agencyToUpdate.setEmployees(agencyToUpdate.getEmployees());
+	@Override
+	public AgencyEntity updateWithRelations(AgencyEntity agency) {
+		checkVersion(agency);
+
+		AgencyEntity agencyToUpdate = findOne(agency.getId());
+
+		agency.setEmployees(agencyToUpdate.getEmployees());
+
+		return update(agency);
+	}
+
+	@Override
+	public AgencyEntity addEmployeeToAgency(Long agencyId, EmployeeEntity employee) {
+
+		AgencyEntity agencyToUpdate = findOne(agencyId);
+		agencyToUpdate.getEmployees().add(employee);
 
 		return update(agencyToUpdate);
 	}

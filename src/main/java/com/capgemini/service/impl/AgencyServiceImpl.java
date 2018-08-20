@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.dao.AgencyDao;
+import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.AgencyEntity;
+import com.capgemini.domain.EmployeeEntity;
 import com.capgemini.mappers.AgencyMapper;
 import com.capgemini.service.AgencyService;
 import com.capgemini.types.AgencyTO;
@@ -16,6 +18,9 @@ public class AgencyServiceImpl implements AgencyService {
 
 	@Autowired
 	AgencyDao agencyRepository;
+
+	@Autowired
+	EmployeeDao employeeRepository;
 
 	@Autowired
 	AgencyMapper agencyMapper;
@@ -43,6 +48,28 @@ public class AgencyServiceImpl implements AgencyService {
 	public AgencyTO findAgencyById(Long agencyId) {
 
 		return agencyMapper.map(agencyRepository.findOne(agencyId));
+	}
+
+	@Override
+	public AgencyTO findEmployeesByAgencyId(Long agencyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public AgencyTO addEmployeeToAgency(Long agencyId, Long employeeId) {
+
+		AgencyEntity agencyToUpdate = agencyRepository.getOne(agencyId);
+		EmployeeEntity employeeToUpdate = employeeRepository.getOne(employeeId);
+
+		agencyToUpdate.getEmployees().add(employeeToUpdate);
+		employeeToUpdate.setAgency(agencyToUpdate);
+
+		AgencyEntity updatedAgency = agencyRepository.update(agencyToUpdate);
+		employeeRepository.update(employeeToUpdate);
+
+		return agencyMapper.map(updatedAgency);
 	}
 
 }

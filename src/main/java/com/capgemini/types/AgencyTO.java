@@ -1,5 +1,6 @@
 package com.capgemini.types;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,13 +12,20 @@ public class AgencyTO {
 	private Address address;
 	private Set<Long> employees = new HashSet<>();
 
+	private int version;
+	private Date created;
+	private Date updated;
+
 	public AgencyTO() {
 	}
 
-	public AgencyTO(Long id, Address address, Set<Long> employees) {
+	public AgencyTO(Long id, Address address, Set<Long> employees, int version, Date created, Date updated) {
 		this.id = id;
 		this.address = address;
 		this.employees = employees;
+		this.version = version;
+		this.created = created;
+		this.updated = updated;
 	}
 
 	public Long getId() {
@@ -44,6 +52,30 @@ public class AgencyTO {
 		this.employees = employees;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+	}
+
 	public static AgencyTOBuilder builder() {
 		return new AgencyTOBuilder();
 	}
@@ -53,6 +85,9 @@ public class AgencyTO {
 		private Long id;
 		private Address address;
 		private Set<Long> employees = new HashSet<>();
+		private int version;
+		private Date created = null;
+		private Date updated = null;
 
 		public AgencyTOBuilder() {
 			super();
@@ -73,9 +108,24 @@ public class AgencyTO {
 			return this;
 		}
 
+		public AgencyTOBuilder version(int version) {
+			this.version = version;
+			return this;
+		}
+
+		public AgencyTOBuilder created(Date created) {
+			this.created = created;
+			return this;
+		}
+
+		public AgencyTOBuilder updated(Date updated) {
+			this.updated = updated;
+			return this;
+		}
+
 		public AgencyTO build() {
 			checkBeforeBuild(address);
-			return new AgencyTO(id, address, employees);
+			return new AgencyTO(id, address, employees, version, created, updated);
 		}
 
 		private void checkBeforeBuild(Address address) {
@@ -89,7 +139,8 @@ public class AgencyTO {
 
 	@Override
 	public String toString() {
-		return "AgencyTO [id=" + id + ", address=" + address + ", employees=" + employees + "]";
+		return "AgencyTO [id=" + id + ", address=" + address + ", employees=" + employees + ", version=" + version
+				+ ", created=" + created + ", updated=" + updated + "]";
 	}
 
 	@Override

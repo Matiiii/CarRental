@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import com.capgemini.domain.AuthorEntity;
 import com.capgemini.domain.BookEntity;
 import com.capgemini.types.AuthorTO;
-import com.capgemini.types.BookTO;;
+import com.capgemini.types.BookTO;
 
 public class BookMapper {
 

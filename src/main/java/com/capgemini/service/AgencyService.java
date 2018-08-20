@@ -10,4 +10,8 @@ public interface AgencyService {
 
 	AgencyTO update(AgencyTO newAgency);
 
+	AgencyTO findEmployeesByAgencyId(Long agencyId);
+
+	AgencyTO addEmployeeToAgency(Long agencyId, Long employee);
+
 }

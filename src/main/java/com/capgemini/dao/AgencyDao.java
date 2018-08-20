@@ -11,4 +11,6 @@ public interface AgencyDao extends Dao<AgencyEntity, Long> {
 
 	AgencyEntity updateWithRelations(AgencyEntity agencyToUpdate);
 
+	AgencyEntity addEmployeeToAgency(Long agencyId, EmployeeEntity employee);
+
 }

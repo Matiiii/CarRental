@@ -1,8 +1,10 @@
 package com.capgemini.types;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.capgemini.enums.CarType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,11 +23,11 @@ public class CarTO {
 
 	private long id;
 	private int version;
-	private Timestamp created;
-	private Timestamp updated;
+	private Date created;
+	private Date updated;
 	private String brand;
 	private String color;
-	private String type;
+	private CarType carType;
 	private int power;
 	private int mileage;
 	private float engineCapacity;

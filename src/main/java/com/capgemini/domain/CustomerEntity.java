@@ -13,14 +13,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
-@Builder
-@AllArgsConstructor
 @Entity
 @Table(name = "customer")
-public class CustomerEntity implements Serializable {
+public class CustomerEntity extends MetaData implements Serializable {
 
 	/**
 	 * 
@@ -78,12 +73,14 @@ public class CustomerEntity implements Serializable {
 	}
 
 	@PrePersist
+	@Override
 	protected void onCreate() {
 		created = new Timestamp(new Date().getTime());
 		version = 1;
 	}
 
 	@PreUpdate
+	@Override
 	protected void onUpdate() {
 		updated = new Timestamp(new Date().getTime());
 

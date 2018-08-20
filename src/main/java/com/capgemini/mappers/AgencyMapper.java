@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.capgemini.domain.AgencyEntity;
-import com.capgemini.domain.EmployeeEntity;
 import com.capgemini.types.AgencyTO;
 
 @Component
@@ -21,7 +20,8 @@ public class AgencyMapper {
 			}
 
 			return AgencyTO.builder().id(agencyEntity.getId()).address(agencyEntity.getAddress()).employees(employeesId)
-					.build();
+					.version(agencyEntity.getVersion()).created(agencyEntity.getCreated())
+					.updated(agencyEntity.getUpdated()).build();
 		}
 
 		return null;
@@ -30,12 +30,10 @@ public class AgencyMapper {
 	public AgencyEntity map(AgencyTO agencyTO) {
 		if (agencyTO != null) {
 
-			Set<EmployeeEntity> employees = new HashSet<>();
-
 			AgencyEntity agencyEntity = new AgencyEntity();
 			agencyEntity.setId(agencyTO.getId());
 			agencyEntity.setAddress(agencyTO.getAddress());
-			agencyEntity.setEmployees(employees);
+			agencyEntity.setVersion(agencyTO.getVersion());
 
 			return agencyEntity;
 
