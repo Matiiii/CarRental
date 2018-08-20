@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.enums.CarType;
+import com.capgemini.exceptions.DifferentVersionsException;
 import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.types.CarTO;
 import com.capgemini.types.EmployeeTO;
@@ -70,6 +71,28 @@ public class CarServiceTest {
 		assertNotNull(updatedCar);
 		assertEquals(savedCar.getId(), updatedCar.getId());
 		assertEquals(savedCar.getColor(), updatedCar.getColor());
+
+	}
+
+	@Transactional
+	@Test(expected = DifferentVersionsException.class)
+	public void shouldNotUpdatedAutoById() {
+
+		// given
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+
+		savedCar.setCarType(CarType.VAN);
+		savedCar.setColor("White");
+		CarTO updatedCar = carService.update(savedCar);
+		updatedCar.setCarType(CarType.CROSSOVER);
+		carService.update(updatedCar);
+		// when
+
+		savedCar.setVersion(10);
+		carService.update(savedCar);
+
+		// then
 
 	}
 

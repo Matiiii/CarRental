@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.enums.Position;
+import com.capgemini.exceptions.DifferentVersionsException;
 import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.types.AgencyTO;
 import com.capgemini.types.CarTO;
@@ -71,6 +72,26 @@ public class EmployeeServiceTest {
 		assertNotNull(updatedEmployee);
 		assertEquals(savedEmployee.getId(), updatedEmployee.getId());
 		assertEquals(savedEmployee.getPosition(), updatedEmployee.getPosition());
+	}
+
+	@Transactional
+	@Test(expected = DifferentVersionsException.class)
+	public void shouldNotUpdatedEmployeeById() {
+
+		// given
+
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
+
+		savedEmployee.setPosition(Position.SUPERVISOR);
+		employeeService.update(savedEmployee);
+
+		savedEmployee.setPosition(Position.ACCOUNTANT);
+		savedEmployee.setVersion(20);
+		// when
+
+		employeeService.update(savedEmployee);
+
+		// then
 	}
 
 	@Transactional
@@ -156,4 +177,5 @@ public class EmployeeServiceTest {
 		assertFalse(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee2.getId()));
 
 	}
+
 }
