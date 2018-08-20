@@ -1,5 +1,7 @@
 package com.capgemini.service.impl;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +11,10 @@ import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.AgencyEntity;
 import com.capgemini.domain.EmployeeEntity;
 import com.capgemini.mappers.AgencyMapper;
+import com.capgemini.mappers.EmployeeMapper;
 import com.capgemini.service.AgencyService;
 import com.capgemini.types.AgencyTO;
+import com.capgemini.types.EmployeeTO;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +28,9 @@ public class AgencyServiceImpl implements AgencyService {
 
 	@Autowired
 	AgencyMapper agencyMapper;
+
+	@Autowired
+	EmployeeMapper employeeMapper;
 
 	@Override
 	@Transactional(readOnly = false)
@@ -51,9 +58,11 @@ public class AgencyServiceImpl implements AgencyService {
 	}
 
 	@Override
-	public AgencyTO findEmployeesByAgencyId(Long agencyId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<EmployeeTO> findEmployeesByAgencyId(Long agencyId) {
+
+		AgencyEntity agency = agencyRepository.getOne(agencyId);
+
+		return employeeMapper.map2To(agency.getEmployees());
 	}
 
 	@Override

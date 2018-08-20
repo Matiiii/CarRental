@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -35,11 +34,7 @@ public class AgencyServiceTest {
 
 		// given
 
-		Set<Long> employeesId = new HashSet<>();
-		Address address = new Address("Lazurowa", "Poznań", "60-655", "2b", "Poland");
-		AgencyTO newAgency = AgencyTO.builder().address(address).employees(employeesId).build();
-
-		AgencyTO savedAgency = agencyService.saveNewAgency(newAgency);
+		AgencyTO savedAgency = dataCreator.saveNewAgencyPoznan();
 		// when
 
 		AgencyTO selectedAgency = agencyService.findAgencyById(savedAgency.getId());
@@ -47,7 +42,7 @@ public class AgencyServiceTest {
 		// then
 		assertNotNull(savedAgency);
 		assertEquals(savedAgency.getId(), selectedAgency.getId());
-		assertEquals(newAgency.getAddress(), selectedAgency.getAddress());
+		assertEquals(savedAgency.getAddress(), selectedAgency.getAddress());
 
 	}
 
@@ -56,23 +51,18 @@ public class AgencyServiceTest {
 
 		// given
 
-		Set<Long> employeesId = new HashSet<>();
-		Address address = new Address("Lazurowa", "Poznań", "60-655", "2b", "Poland");
-		AgencyTO newAgency = AgencyTO.builder().address(address).employees(employeesId).build();
+		AgencyTO savedAgency = dataCreator.saveNewAgencyPoznan();
 
-		AgencyTO savedAgency = agencyService.saveNewAgency(newAgency);
-
-		Address address2 = new Address("Kiełbasy", "Wrocław", "56-655", "2b", "Poland");
-		AgencyTO AgencyToUpdate = AgencyTO.builder().id(savedAgency.getId()).address(address2).employees(employeesId)
-				.version(savedAgency.getVersion()).build();
+		Address newAddress = new Address("Kiełbasy", "Wrocław", "56-655", "2b", "Poland");
+		savedAgency.setAddress(newAddress);
 
 		// when
-		AgencyTO updatedAgency = agencyService.update(AgencyToUpdate);
+		AgencyTO updatedAgency = agencyService.update(savedAgency);
 
 		// then
 		assertNotNull(updatedAgency);
 		assertEquals(savedAgency.getId(), updatedAgency.getId());
-		assertEquals(AgencyToUpdate.getAddress(), updatedAgency.getAddress());
+		assertEquals(savedAgency.getAddress(), updatedAgency.getAddress());
 
 	}
 
@@ -97,4 +87,29 @@ public class AgencyServiceTest {
 		assertTrue(agencyAfterOperation.getEmployees().contains(savedEmployee.getId()));
 		assertEquals(savedAgency.getId(), employeeAfterOp.getAgency());
 	}
+
+	@Test
+	public void shoulsReturn2EmployeesFromAgency() {
+
+		// given
+
+		AgencyTO savedAgency = dataCreator.saveNewAgencyPoznan();
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
+		EmployeeTO savedEmployee2 = dataCreator.saveNewEmployeeKrzysztof();
+
+		agencyService.addEmployeeToAgency(savedAgency.getId(), savedEmployee.getId());
+		agencyService.addEmployeeToAgency(savedAgency.getId(), savedEmployee2.getId());
+		// when
+
+		Set<EmployeeTO> employees = agencyService.findEmployeesByAgencyId(savedAgency.getId());
+
+		// then
+
+		assertNotNull(employees);
+		assertEquals(2, employees.size());
+		assertTrue(employees.stream().anyMatch(employee -> employee.getId() == savedEmployee.getId()));
+		assertTrue(employees.stream().anyMatch(employee -> employee.getId() == savedEmployee2.getId()));
+
+	}
+
 }

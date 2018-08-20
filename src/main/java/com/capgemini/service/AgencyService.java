@@ -1,6 +1,9 @@
 package com.capgemini.service;
 
+import java.util.Set;
+
 import com.capgemini.types.AgencyTO;
+import com.capgemini.types.EmployeeTO;
 
 public interface AgencyService {
 
@@ -10,7 +13,7 @@ public interface AgencyService {
 
 	AgencyTO update(AgencyTO newAgency);
 
-	AgencyTO findEmployeesByAgencyId(Long agencyId);
+	Set<EmployeeTO> findEmployeesByAgencyId(Long agencyId);
 
 	AgencyTO addEmployeeToAgency(Long agencyId, Long employee);
 
