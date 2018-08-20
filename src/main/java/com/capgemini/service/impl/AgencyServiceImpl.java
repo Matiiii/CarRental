@@ -2,6 +2,7 @@ package com.capgemini.service.impl;
 
 import java.util.Set;
 
+import org.assertj.core.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import com.capgemini.dao.AgencyDao;
 import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.AgencyEntity;
 import com.capgemini.domain.EmployeeEntity;
+import com.capgemini.exceptions.Message;
 import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.mappers.AgencyMapper;
 import com.capgemini.mappers.EmployeeMapper;
@@ -36,6 +38,7 @@ public class AgencyServiceImpl implements AgencyService {
 	@Override
 	@Transactional(readOnly = false)
 	public AgencyTO saveNewAgency(AgencyTO newAgency) {
+		Preconditions.checkNotNull(newAgency, Message.EMPTY_OBJECT);
 
 		AgencyEntity agencyEntity = agencyMapper.map(newAgency);
 		AgencyEntity savedAgency = agencyRepository.save(agencyEntity);
@@ -46,6 +49,8 @@ public class AgencyServiceImpl implements AgencyService {
 	@Override
 	@Transactional(readOnly = false)
 	public AgencyTO update(AgencyTO agencyToUpdate) {
+		Preconditions.checkNotNull(agencyToUpdate, Message.EMPTY_OBJECT);
+
 		AgencyEntity agencyMapped = agencyMapper.map(agencyToUpdate);
 		AgencyEntity updatedAgency = agencyRepository.updateWithRelations(agencyMapped);
 
@@ -54,12 +59,14 @@ public class AgencyServiceImpl implements AgencyService {
 
 	@Override
 	public AgencyTO findAgencyById(Long agencyId) {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
 
 		return agencyMapper.map(agencyRepository.findOne(agencyId));
 	}
 
 	@Override
 	public Set<EmployeeTO> findEmployeesByAgencyId(Long agencyId) {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
 
 		AgencyEntity agency = agencyRepository.getOne(agencyId);
 
@@ -69,6 +76,8 @@ public class AgencyServiceImpl implements AgencyService {
 	@Override
 	@Transactional(readOnly = false)
 	public AgencyTO addEmployeeToAgency(Long agencyId, Long employeeId) {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
+		Preconditions.checkNotNull(employeeId, Message.EMPTY_ID);
 
 		AgencyEntity agencyToUpdate = agencyRepository.getOne(agencyId);
 		EmployeeEntity employeeToUpdate = employeeRepository.getOne(employeeId);
@@ -85,6 +94,7 @@ public class AgencyServiceImpl implements AgencyService {
 	@Override
 	@Transactional(readOnly = false)
 	public void delete(Long agencyId) {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
 
 		agencyRepository.delete(agencyId);
 
@@ -93,6 +103,8 @@ public class AgencyServiceImpl implements AgencyService {
 	@Override
 	@Transactional(readOnly = false)
 	public AgencyTO deleteEmpoyeeFromAgency(Long agencyId, Long employeeId) throws ObjectNotExistException {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
+		Preconditions.checkNotNull(employeeId, Message.EMPTY_ID);
 
 		EmployeeEntity employee = employeeRepository.getOne(employeeId);
 		if (employee == null) {

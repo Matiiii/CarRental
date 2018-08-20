@@ -1,9 +1,13 @@
 package com.capgemini.dao.impl;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.persistence.TypedQuery;
+
 import org.springframework.stereotype.Repository;
 
 import com.capgemini.dao.EmployeeDao;
-import com.capgemini.domain.AgencyEntity;
 import com.capgemini.domain.EmployeeEntity;
 import com.capgemini.exceptions.DifferentVersionsException;
 
@@ -29,12 +33,11 @@ public class EmployeeDaoImpl extends AbstractDao<EmployeeEntity, Long> implement
 	}
 
 	@Override
-	public EmployeeEntity addAgencyToEmployee(Long employeeId, AgencyEntity agencyToAdd) {
-
-		EmployeeEntity employeeToUpdate = getOne(employeeId);
-		employeeToUpdate.setAgency(agencyToAdd);
-
-		return update(employeeToUpdate);
+	public Set<EmployeeEntity> findCaregiversByCar(Long carId) {
+		TypedQuery<EmployeeEntity> query = entityManager.createQuery(
+				"select emp from EmployeeEntity emp inner join emp.cars ec where ec.id = :id", EmployeeEntity.class);
+		query.setParameter("id", carId);
+		return query.getResultList().stream().collect(Collectors.toSet());
 	}
 
 }

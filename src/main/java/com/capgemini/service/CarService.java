@@ -2,6 +2,8 @@ package com.capgemini.service;
 
 import java.util.Set;
 
+import com.capgemini.enums.CarType;
+import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.types.CarTO;
 
 public interface CarService {
@@ -12,10 +14,12 @@ public interface CarService {
 
 	CarTO update(CarTO car);
 
-	CarTO addCaregive(Long employeeId);
-
 	Set<CarTO> findCarsByBrand(String brand);
 
+	Set<CarTO> findCarsByType(CarType type);
+
 	void delete(Long carId);
+
+	CarTO addEmployeeToCaregivers(Long carId, Long employeId) throws ObjectNotExistException;
 
 }

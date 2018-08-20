@@ -3,8 +3,8 @@ package com.capgemini.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -15,7 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.enums.CarType;
+import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.types.CarTO;
+import com.capgemini.types.EmployeeTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = "spring.profiles.active=mysql")
@@ -23,6 +25,9 @@ public class CarServiceTest {
 
 	@Autowired
 	private CarService carService;
+
+	@Autowired
+	private EmployeeService employeeService;
 
 	@Autowired
 	private DataCreator dataCreator;
@@ -52,27 +57,19 @@ public class CarServiceTest {
 
 		// given
 
-		Set<Long> rents = new HashSet<>();
+		CarTO savedCar = dataCreator.saveNewAudiCar();
 
-		Set<Long> caregivers = new HashSet<>();
-
-		CarTO carAudi = CarTO.builder().brand("Audi").color("Zielony").engineCapacity(2.5F).mileage(20034).power(320)
-				.rents(rents).caregivers(caregivers).carType(CarType.WAGON).build();
-
-		CarTO savedCar = carService.saveNewCar(carAudi);
-
-		CarTO carAudi2 = CarTO.builder().id(savedCar.getId()).brand("Audi").color("Czerwony").engineCapacity(2.5F)
-				.mileage(20034).power(320).rents(rents).caregivers(caregivers).version(savedCar.getVersion())
-				.carType(CarType.VAN).build();
+		savedCar.setCarType(CarType.VAN);
+		savedCar.setColor("White");
 
 		// when
 
-		CarTO updatedCar = carService.update(carAudi2);
+		CarTO updatedCar = carService.update(savedCar);
 
 		// then
 		assertNotNull(updatedCar);
 		assertEquals(savedCar.getId(), updatedCar.getId());
-		assertEquals(carAudi2.getColor(), updatedCar.getColor());
+		assertEquals(savedCar.getColor(), updatedCar.getColor());
 
 	}
 
@@ -115,4 +112,53 @@ public class CarServiceTest {
 		assertNull(selectedCar);
 
 	}
+
+	@Transactional
+	@Test
+	public void shouldGet2AutoByCarType() {
+
+		// given
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+		dataCreator.saveNewAudiCar();
+
+		// when
+
+		Set<CarTO> selectedCars = carService.findCarsByType(savedCar.getCarType());
+
+		// then
+		assertNotNull(selectedCars);
+		assertEquals(2, selectedCars.size());
+		assertEquals(savedCar.getCarType(), selectedCars.iterator().next().getCarType());
+
+	}
+
+	@Transactional
+	@Test
+	public void shouldAddCaregiversToCarAndCarToEmployee() {
+
+		// given
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
+
+		// when
+		try {
+			carService.addEmployeeToCaregivers(savedCar.getId(), savedEmployee.getId());
+		} catch (ObjectNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		CarTO selectedCar = carService.findCarById(savedCar.getId());
+		EmployeeTO selectedEmployee = employeeService.findEmployeeById(savedEmployee.getId());
+
+		// then
+		assertNotNull(selectedCar);
+		assertNotNull(selectedEmployee);
+
+		assertTrue(selectedCar.getCaregivers().stream().anyMatch(employee -> employee == savedEmployee.getId()));
+		assertTrue(selectedEmployee.getCars().stream().anyMatch(car -> car == savedCar.getId()));
+
+	}
+
 }

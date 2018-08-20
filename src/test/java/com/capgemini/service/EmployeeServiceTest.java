@@ -1,10 +1,10 @@
 package com.capgemini.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
@@ -14,8 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.capgemini.domain.PersonalDetail;
 import com.capgemini.enums.Position;
+import com.capgemini.exceptions.ObjectNotExistException;
+import com.capgemini.types.CarTO;
 import com.capgemini.types.EmployeeTO;
 
 @RunWith(SpringRunner.class)
@@ -25,24 +26,19 @@ public class EmployeeServiceTest {
 	@Autowired
 	private EmployeeService employeeService;
 
+	@Autowired
+	private CarService carService;
+
+	@Autowired
+	private DataCreator dataCreator;
+
 	@Transactional
 	@Test
 	public void shouldGetEmployeeById() {
 
 		// given
 
-		Set<Long> cars = new HashSet<>();
-		PersonalDetail personalDetail = new PersonalDetail();
-		personalDetail.setName("Krzysztof");
-		personalDetail.setSurname("Jarzyna");
-		personalDetail.setPesel(90080132454545L);
-		personalDetail.setBirthday(new Date(90, 8, 1));
-		personalDetail.setEmail("orzeszek@gmail.com");
-
-		EmployeeTO newEmployee = EmployeeTO.builder().position(Position.SALESMAN).personalDetail(personalDetail)
-				.cars(cars).build();
-
-		EmployeeTO savedEmployee = employeeService.saveNewEmployee(newEmployee);
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
 		// when
 
 		EmployeeTO selectedEmployee = employeeService.findEmployeeById(savedEmployee.getId());
@@ -60,29 +56,51 @@ public class EmployeeServiceTest {
 
 		// given
 
-		Set<Long> cars = new HashSet<>();
-		PersonalDetail personalDetail = new PersonalDetail();
-		personalDetail.setName("Krzysztof");
-		personalDetail.setSurname("Jarzyna");
-		personalDetail.setPesel(90080132454545L);
-		personalDetail.setBirthday(new Date(90, 8, 1));
-		personalDetail.setEmail("orzeszek@gmail.com");
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
 
-		EmployeeTO newEmployee = EmployeeTO.builder().position(Position.SALESMAN).personalDetail(personalDetail)
-				.cars(cars).build();
-
-		EmployeeTO savedEmployee = employeeService.saveNewEmployee(newEmployee);
-
-		EmployeeTO employeeToUpdate = EmployeeTO.builder().id(savedEmployee.getId()).version(savedEmployee.getVersion())
-				.position(Position.SUPERVISOR).personalDetail(personalDetail).cars(cars).build();
-
+		savedEmployee.setPosition(Position.SUPERVISOR);
 		// when
 
-		EmployeeTO updatedEmployee = employeeService.update(employeeToUpdate);
+		EmployeeTO updatedEmployee = employeeService.update(savedEmployee);
 
 		// then
 		assertNotNull(updatedEmployee);
 		assertEquals(savedEmployee.getId(), updatedEmployee.getId());
-		assertEquals(employeeToUpdate.getPosition(), updatedEmployee.getPosition());
+		assertEquals(savedEmployee.getPosition(), updatedEmployee.getPosition());
+	}
+
+	@Transactional
+	@Test
+	public void shouldGet2CaregiversByCarId() {
+
+		// given
+
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
+		EmployeeTO savedEmployee2 = dataCreator.saveNewEmployeeKrzysztof();
+		EmployeeTO savedEmployee3 = dataCreator.saveNewEmployeeKrzysztof();
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+		CarTO savedCar2 = dataCreator.saveNewAudiCar();
+
+		try {
+			carService.addEmployeeToCaregivers(savedCar.getId(), savedEmployee.getId());
+			carService.addEmployeeToCaregivers(savedCar.getId(), savedEmployee2.getId());
+			carService.addEmployeeToCaregivers(savedCar2.getId(), savedEmployee3.getId());
+		} catch (ObjectNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// when
+
+		Set<EmployeeTO> selectedEmployees = employeeService.findCaregiversByCarId(savedCar.getId());
+
+		// then
+		assertNotNull(selectedEmployees);
+		assertEquals(2, selectedEmployees.size());
+		assertTrue(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee.getId()));
+		assertFalse(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee3.getId()));
+		assertTrue(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee2.getId()));
+
 	}
 }

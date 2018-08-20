@@ -1,11 +1,15 @@
 package com.capgemini.service.impl;
 
+import java.util.Set;
+
+import org.assertj.core.util.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.EmployeeEntity;
+import com.capgemini.exceptions.Message;
 import com.capgemini.mappers.EmployeeMapper;
 import com.capgemini.service.EmployeeService;
 import com.capgemini.types.EmployeeTO;
@@ -25,6 +29,8 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	@Transactional(readOnly = false)
 	public EmployeeTO saveNewEmployee(EmployeeTO newEmployee) {
+		Preconditions.checkNotNull(newEmployee, Message.EMPTY_OBJECT);
+
 		EmployeeEntity employeeEntity = employeeMapper.map(newEmployee);
 		EmployeeEntity savedEmployee = employeeRepository.save(employeeEntity);
 		return employeeMapper.map(savedEmployee);
@@ -32,6 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService
 
 	@Override
 	public EmployeeTO findEmployeeById(Long id) {
+		Preconditions.checkNotNull(id, Message.EMPTY_ID);
 
 		EmployeeEntity car = employeeRepository.findOne(id);
 		return employeeMapper.map(car);
@@ -40,18 +47,22 @@ public class EmployeeServiceImpl implements EmployeeService
 	@Override
 	@Transactional(readOnly = false)
 	public EmployeeTO update(EmployeeTO employee) {
-		{
-			EmployeeEntity employeeMapped = employeeMapper.map(employee);
-			EmployeeEntity updatedEmployee = employeeRepository.updateWithRelations(employeeMapped);
+		Preconditions.checkNotNull(employee, Message.EMPTY_OBJECT);
 
-			return employeeMapper.map(updatedEmployee);
-		}
+		EmployeeEntity employeeMapped = employeeMapper.map(employee);
+		EmployeeEntity updatedEmployee = employeeRepository.updateWithRelations(employeeMapped);
+
+		return employeeMapper.map(updatedEmployee);
+
 	}
 
 	@Override
-	public EmployeeTO addCarToCare(Long carId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<EmployeeTO> findCaregiversByCarId(Long carId) {
+		Preconditions.checkNotNull(carId, Message.EMPTY_ID);
+
+		Set<EmployeeEntity> caregivers = employeeRepository.findCaregiversByCar(carId);
+
+		return employeeMapper.map2To(caregivers);
 	}
 
 }

@@ -80,9 +80,7 @@ public class Address implements Serializable {
 	}
 
 	public boolean checkAddress() {
-		if (street.isEmpty() || (street == null) || city.isEmpty() || (city == null) || postalCode.isEmpty()
-				|| (postalCode == null) || hauseNumber.isEmpty() || (hauseNumber == null) || country.isEmpty()
-				|| (country == null)) {
+		if (street.isEmpty() || city.isEmpty() || postalCode.isEmpty() || hauseNumber.isEmpty() || country.isEmpty()) {
 			return false;
 		}
 		return true;

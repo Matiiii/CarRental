@@ -1,5 +1,7 @@
 package com.capgemini.service;
 
+import java.util.Set;
+
 import com.capgemini.types.EmployeeTO;
 
 public interface EmployeeService {
@@ -10,6 +12,6 @@ public interface EmployeeService {
 
 	EmployeeTO update(EmployeeTO car);
 
-	EmployeeTO addCarToCare(Long carId);
+	Set<EmployeeTO> findCaregiversByCarId(Long carId);
 
 }
