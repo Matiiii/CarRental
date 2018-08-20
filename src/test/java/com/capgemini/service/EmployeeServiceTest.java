@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.capgemini.enums.Position;
 import com.capgemini.exceptions.ObjectNotExistException;
+import com.capgemini.types.AgencyTO;
 import com.capgemini.types.CarTO;
 import com.capgemini.types.EmployeeTO;
 
@@ -28,6 +29,9 @@ public class EmployeeServiceTest {
 
 	@Autowired
 	private CarService carService;
+
+	@Autowired
+	private AgencyService agencyService;
 
 	@Autowired
 	private DataCreator dataCreator;
@@ -101,6 +105,55 @@ public class EmployeeServiceTest {
 		assertTrue(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee.getId()));
 		assertFalse(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee3.getId()));
 		assertTrue(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee2.getId()));
+
+	}
+
+	@Transactional
+	@Test
+	public void shouldGet1CaregiverByAgencyIdAndCarId() {
+
+		// given
+
+		EmployeeTO savedEmployee = dataCreator.saveNewEmployeeKrzysztof();
+		EmployeeTO savedEmployee2 = dataCreator.saveNewEmployeeKrzysztof();
+		EmployeeTO savedEmployee3 = dataCreator.saveNewEmployeeKrzysztof();
+
+		CarTO savedCar = dataCreator.saveNewAudiCar();
+		CarTO savedCar2 = dataCreator.saveNewAudiCar();
+
+		AgencyTO savedAgency = dataCreator.saveNewAgencyPoznan();
+		AgencyTO savedAgency2 = dataCreator.saveNewAgencyPoznan();
+
+		try {
+			carService.addEmployeeToCaregivers(savedCar.getId(), savedEmployee.getId());
+			carService.addEmployeeToCaregivers(savedCar.getId(), savedEmployee2.getId());
+			carService.addEmployeeToCaregivers(savedCar2.getId(), savedEmployee3.getId());
+		} catch (ObjectNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		agencyService.addEmployeeToAgency(savedAgency.getId(), savedEmployee.getId());
+		agencyService.addEmployeeToAgency(savedAgency2.getId(), savedEmployee2.getId());
+		agencyService.addEmployeeToAgency(savedAgency2.getId(), savedEmployee3.getId());
+
+		// when
+
+		Set<EmployeeTO> selectedEmployees = null;
+		try {
+			selectedEmployees = employeeService.findAllCaregiversByAgencyIdAndCarId(savedAgency.getId(),
+					savedCar.getId());
+		} catch (ObjectNotExistException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// then
+		assertNotNull(selectedEmployees);
+		assertEquals(1, selectedEmployees.size());
+		assertTrue(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee.getId()));
+		assertFalse(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee3.getId()));
+		assertFalse(selectedEmployees.stream().anyMatch(employee -> employee.getId() == savedEmployee2.getId()));
 
 	}
 }

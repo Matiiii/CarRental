@@ -25,6 +25,12 @@ public class AgencyDaoImpl extends AbstractDao<AgencyEntity, Long> implements Ag
 	}
 
 	@Override
+	public AgencyEntity update(AgencyEntity agencyEntity) {
+		checkVersion(agencyEntity);
+		return entityManager.merge(agencyEntity);
+	}
+
+	@Override
 	public AgencyEntity updateWithRelations(AgencyEntity agency) {
 		checkVersion(agency);
 
@@ -33,12 +39,6 @@ public class AgencyDaoImpl extends AbstractDao<AgencyEntity, Long> implements Ag
 		agency.setEmployees(agencyToUpdate.getEmployees());
 
 		return update(agency);
-	}
-
-	@Override
-	public AgencyEntity addEmployeeToAgency(Long agencyId, EmployeeEntity employee) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.capgemini.dao.EmployeeDao;
 import com.capgemini.domain.EmployeeEntity;
 import com.capgemini.exceptions.Message;
+import com.capgemini.exceptions.ObjectNotExistException;
 import com.capgemini.mappers.EmployeeMapper;
 import com.capgemini.service.EmployeeService;
 import com.capgemini.types.EmployeeTO;
@@ -63,6 +64,20 @@ public class EmployeeServiceImpl implements EmployeeService
 		Set<EmployeeEntity> caregivers = employeeRepository.findCaregiversByCar(carId);
 
 		return employeeMapper.map2To(caregivers);
+	}
+
+	@Override
+	public Set<EmployeeTO> findAllCaregiversByAgencyIdAndCarId(Long agencyId, Long carId)
+			throws ObjectNotExistException {
+		Preconditions.checkNotNull(agencyId, Message.EMPTY_ID);
+		Preconditions.checkNotNull(carId, Message.EMPTY_ID);
+
+		Set<EmployeeEntity> selectedEmployees = employeeRepository.findAllCarCarersByCarAndAgency(agencyId, carId);
+		if (selectedEmployees == null) {
+			throw new ObjectNotExistException("employee: " + "agencyId " + agencyId + "carId " + carId);
+		}
+
+		return employeeMapper.map2To(selectedEmployees);
 	}
 
 }

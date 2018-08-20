@@ -20,7 +20,6 @@ import com.capgemini.exceptions.DifferentVersionsException;
 public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
 
 	@Override
-
 	public Set<CarEntity> findByType(CarType type) {
 		TypedQuery<CarEntity> query = entityManager
 				.createQuery("select car from CarEntity car where car.carType = :type", CarEntity.class);
@@ -45,6 +44,12 @@ public class CarDaoImpl extends AbstractDao<CarEntity, Long> implements CarDao {
 
 		return update(car);
 
+	}
+
+	@Override
+	public CarEntity update(CarEntity carEntity) {
+		checkVersion(carEntity);
+		return entityManager.merge(carEntity);
 	}
 
 	@Override

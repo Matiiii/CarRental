@@ -10,4 +10,6 @@ public interface EmployeeDao extends Dao<EmployeeEntity, Long> {
 
 	Set<EmployeeEntity> findCaregiversByCar(Long carId);
 
+	Set<EmployeeEntity> findAllCarCarersByCarAndAgency(Long agencyId, Long carId);
+
 }
